@@ -1,0 +1,10 @@
+server:
+  port: 8500
+spring:
+  cloud:
+    gateway:
+      routes:
+      - id: account-svc
+        uri: lb:/account-svc
+        predicates:
+        - Path=/api/v1/account/**
