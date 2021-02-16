@@ -1,11 +1,39 @@
+digitalbank:
+  iam:
+    hostname: localhost
+    port: 8080
+    instance: http://${digitalbank.iam.hostname}:${digitalbank.iam.port}
+  discovery:
+    hostname: localhost
+    port: 8400
+    instance: http://${digitalbank.discovery.hostname}:${digitalbank.discovery.port}
+  logging:
+    hostname: localhost
+    port: 9411
+    instance: http://${digitalbank.logging.hostname}:${digitalbank.logging.port}
+spring:
+  zipkin:
+    base-url: ${digitalbank.logging.instance}
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: ${digitalbank.iam.instance}/realms/digitalbank
 eureka:
   instance:
-    hostname: localhost
+    hostname: ${digitalbank.discovery.hostname}
   client:
     fetch-registry: true
     register-with-eureka: true
     should-unregister-on-shutdown: true
     service-url:
-      defaultZone: http://${eureka.instance.hostname}:8400/eureka
+      defaultZone: ${digitalbank.discovery.instance}/eureka
     helathcheck:
       enabled: true
+logging:
+  level:
+    root: INFO
+    org.springframework.web: INFO
+    org.springframework.security: INFO
+    org.springframework.security.oauth2: INFO
+    org.springframework.cloud.gateway: TRACE

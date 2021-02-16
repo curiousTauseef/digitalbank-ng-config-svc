@@ -12,3 +12,5 @@ spring:
         native:
           search-locations:
           - classpath:/config
+  zipkin:
+    base-url: http://${digitalbank.logging.hostname}:${digitalbank.logging.port}

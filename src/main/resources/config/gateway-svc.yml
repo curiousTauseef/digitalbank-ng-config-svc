@@ -3,8 +3,35 @@ server:
 spring:
   cloud:
     gateway:
+      httpclient:
+        wiretap: true
+      default-filters:
+      - TokenRelay
       routes:
-      - id: account-svc
-        uri: lb:/account-svc
+#      - id: auth-svc
+#        uri: ${digitalbank.iam.instance}
+#        predicates:
+#        - Path=/api/v1/auth
+#        filters:
+#        - RewritePath=/api/v1/auth, /realms/digitalbank/protocol/openid-connect/token
+#        - AddRequestParameter=value1, value2
+#        - AuthorizationFilter
+      - id: web-svc
+        uri: lb://web-svc
         predicates:
-        - Path=/api/v1/account/**
+        - Path=/api/v1/web/**
+        filters:
+        - RemoveRequestHeader=Cookie
+  security:
+    oauth2:
+      client:
+        provider:
+          keycloak:
+            issuer-uri: ${digitalbank.iam.instance}/realms/digitalbank
+        registration:
+          gateway:
+            provider: keycloak
+            client-id: gateway
+            client-secret: 9b43a1aa-463c-41a6-b963-a4f495b260c0
+
+        
